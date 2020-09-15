@@ -11,7 +11,7 @@ class Chiper:
         result = ""
 
         for a in text:
-            result += Chiper.alphabet[Chiper.alphabet.index(a)+offset]
+            result += Chiper.alphabet[(Chiper.alphabet.index(a)+offset)%len(Chiper.alphabet)]
 
         return result
 
@@ -20,7 +20,7 @@ class Chiper:
         result = ""
 
         for a in text:
-            result += Chiper.alphabet[Chiper.alphabet.index(a)-offset]
+            result += Chiper.alphabet[(Chiper.alphabet.index(a)-offset)%len(Chiper.alphabet)]
 
         return result
 
@@ -42,5 +42,5 @@ if __name__ == '__main__':
 
     if (args[1] == "superdecode"):
         for i in range(32):
-            print(Chiper.decode(args[3], i))
+            print(Chiper.decode(args[3], i), i)
 

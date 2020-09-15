@@ -2,6 +2,11 @@ import sys
 
 class Chiper:
 
+    ini_alphabet = [
+        'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф',
+        'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Э', 'Ю', 'Я'
+    ]
+
     alphabet = [
         'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф',
         'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Э', 'Ю', 'Я'
@@ -42,6 +47,10 @@ class Chiper:
             symbol = 'И'
         if symbol == 'Ё':
             symbol = 'Е'
+
+        if not symbol in Chiper.ini_alphabet:
+            print("Incorrect symbol ", symbol)
+            exit()
 
         return symbol
 
