@@ -48,8 +48,7 @@ class Chiper:
     """
     def replaceSymbol(self, symbol):
         if not symbol in self.alphabet:
-            print("Incorrect symbol ", symbol)
-            exit()
+            raise Exception("Incorrect symbol " + symbol)
 
         if symbol == 'Ь':
             return 'Ъ'
@@ -81,6 +80,7 @@ class Chiper:
                 else:
                     self.m[i].append(copyAlphabet[a])
                     a += 1
+        return self
 
     def getIndexesOfChar(self, x):
         indexes = [-1, -1]
@@ -91,15 +91,20 @@ class Chiper:
                 indexes = [j, line.index(x)]
         return indexes
 
-    def encode(self, text):
+    def do(self, command, text):
+        if command == "encode":
+            offset = +1
+        elif command == "decode":
+            offset = -1
+        else:
+            raise Exception("Incorrect command (encode, decode)")
+
         result = []
         resultBigram = []
-        i = 0   # index for text
 
         text = self.textToBigram(text)
 
-        for bigram in text:
-            # get indexes of elements in matrix
+        for bigram in text: # get indexes of elements in matrix
             x1 = bigram[0]
             x2 = bigram[1]
 
@@ -109,23 +114,17 @@ class Chiper:
             ]
 
             # calculate result bigram
-            done = False
-            ## rows
-            if indexes[0][0] == indexes[1][0]:
+            if indexes[0][0] == indexes[1][0]:  ## rows
                 resultBigram = [
-                    self.m[indexes[0][0]][(indexes[0][1]+1)%6],
-                    self.m[indexes[1][0]][(indexes[1][1]+1)%6]
+                    self.m[indexes[0][0]][(indexes[0][1]+offset)%6],
+                    self.m[indexes[1][0]][(indexes[1][1]+offset)%6]
                 ]
-                done = True
-            ## columns
-            if indexes[0][1] == indexes[1][1]:
+            elif indexes[0][1] == indexes[1][1]:    ## columns
                 resultBigram = [
-                    self.m[(indexes[0][0]+1)%5][indexes[0][1]],
-                    self.m[(indexes[1][0]+1)%5][indexes[1][1]]
+                    self.m[(indexes[0][0]+offset)%5][indexes[0][1]],
+                    self.m[(indexes[1][0]+offset)%5][indexes[1][1]]
                 ]
-                done = True
-            ## else
-            if not done:
+            else:   ## mixed
                 resultBigram = [
                     self.m[indexes[0][0]][indexes[1][1]],
                     self.m[indexes[1][0]][indexes[0][1]]
@@ -136,63 +135,10 @@ class Chiper:
         return "".join(result)
 
 
-    def decode(self, text):
-        result = []
-        text = self.textToBigram(text)
-
-        print(self.m)
-
-        for bigram in text:
-            # get indexes of elements in matrix
-            x1 = bigram[0]
-            x2 = bigram[1]
-
-            indexes = [
-                self.getIndexesOfChar(x1),
-                self.getIndexesOfChar(x2),
-            ]
-
-            # calculate result bigram
-            done = False
-            ## rows
-            if indexes[0][0] == indexes[1][0]:
-                resultBigram = [
-                    self.m[indexes[0][0]][(indexes[0][1]-1)%6],
-                    self.m[indexes[1][0]][(indexes[1][1]-1)%6]
-                ]
-                done = True
-            ## columns
-            if indexes[0][1] == indexes[1][1]:
-                resultBigram = [
-                    self.m[(indexes[0][0]-1)%5][indexes[0][1]],
-                    self.m[(indexes[1][0]-1)%5][indexes[1][1]]
-                ]
-                done = True
-            ## else
-            if not done:
-                resultBigram = [
-                    self.m[indexes[0][0]][indexes[1][1]],
-                    self.m[indexes[1][0]][indexes[0][1]]
-                ]
-
-            result.append("".join(resultBigram))
-        return result
-
-
 if __name__ == '__main__':
     args = sys.argv
 
     if len(args) < 4:
-        print("Неверное количество аргументов")
-        exit()
+        raise Exception("Неверное количество аргументов")
 
-    chiper = Chiper()
-
-    if (args[1] == "encode"):
-        chiper.generateMatrix(args[2])
-        print(chiper.encode(args[3]))
-        exit()
-    if (args[1] == "decode"):
-        chiper.generateMatrix(args[2])
-        print(chiper.decode(args[3]))
-        exit()
+    print(Chiper().generateMatrix(args[2]).do(args[1], args[3]))
