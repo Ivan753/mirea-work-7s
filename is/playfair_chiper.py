@@ -8,11 +8,6 @@ class Chiper:
     списка для матрицы и специального символа (вставляется, если биграмма содержит два одинаковых символа)
     """
     def __init__(self):
-        self.ini_alphabet = [
-            'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф',
-            'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Э', 'Ю', 'Я'
-        ]
-
         self.alphabet = [
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф',
             'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Э', 'Ю', 'Я'
@@ -52,16 +47,16 @@ class Chiper:
     Смена символов для соответствия алфавиту
     """
     def replaceSymbol(self, symbol):
-        if symbol == 'Ь':
-            symbol = 'Ъ'
-        if symbol == 'Й':
-            symbol = 'И'
-        if symbol == 'Ё':
-            symbol = 'Е'
-
-        if not symbol in self.ini_alphabet:
+        if not symbol in self.alphabet:
             print("Incorrect symbol ", symbol)
             exit()
+
+        if symbol == 'Ь':
+            return 'Ъ'
+        elif symbol == 'Й':
+            return 'И'
+        elif symbol == 'Ё':
+            return 'Е'
 
         return symbol
 
@@ -72,19 +67,29 @@ class Chiper:
         k = 0   # index for key
         a = 0   # index for alphabet
 
+        copyAlphabet = self.alphabet.copy()
+
         for i in range(5):
             self.m.append([])
             for j in range(6):
                 if k < len(key):
-                    symbol = key[k]
-                    symbol = self.replaceSymbol(symbol)
+                    symbol = self.replaceSymbol(key[k])
 
                     self.m[i].append(symbol)
-                    self.alphabet.remove(symbol)
+                    copyAlphabet.remove(symbol)
                     k += 1
                 else:
-                    self.m[i].append(self.alphabet[a])
+                    self.m[i].append(copyAlphabet[a])
                     a += 1
+
+    def getIndexesOfChar(self, x):
+        indexes = [-1, -1]
+
+        for j in range(len(self.m)):
+            line = self.m[j]
+            if x in line:
+                indexes = [j, line.index(x)]
+        return indexes
 
     def encode(self, text):
         result = []
@@ -98,14 +103,10 @@ class Chiper:
             x1 = bigram[0]
             x2 = bigram[1]
 
-            indexes = [[-1, -1], [-1, -1]]
-
-            for j in range(len(self.m)):
-                line = self.m[j]
-                if x1 in line:
-                    indexes[0] = [j, line.index(x1)]
-                if x2 in line:
-                    indexes[1] = [j, line.index(x2)]
+            indexes = [
+                self.getIndexesOfChar(x1),
+                self.getIndexesOfChar(x2),
+            ]
 
             # calculate result bigram
             done = False
@@ -146,14 +147,10 @@ class Chiper:
             x1 = bigram[0]
             x2 = bigram[1]
 
-            indexes = [[-1, -1], [-1, -1]]
-
-            for j in range(len(self.m)):
-                line = self.m[j]
-                if x1 in line:
-                    indexes[0] = [j, line.index(x1)]
-                if x2 in line:
-                    indexes[1] = [j, line.index(x2)]
+            indexes = [
+                self.getIndexesOfChar(x1),
+                self.getIndexesOfChar(x2),
+            ]
 
             # calculate result bigram
             done = False
@@ -199,5 +196,3 @@ if __name__ == '__main__':
         chiper.generateMatrix(args[2])
         print(chiper.decode(args[3]))
         exit()
-
-
