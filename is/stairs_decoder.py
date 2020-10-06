@@ -21,7 +21,7 @@ if __name__ == '__main__':
 
 
     for i in range(start, finish):
-        splitedText = []
+        splittedText = []
         # получаем длину ступени без остатка
         partsLength = len(text) // i
         # смотрим, нужен ли остаток (добавляется по единице к строке, пока остаток не закончится)
@@ -35,15 +35,15 @@ if __name__ == '__main__':
             if k // partsLength >= len(text)%i:
                 add = 0
 
-            splitedText.append(text[k:k+partsLength+add])
+            splittedText.append(text[k:k+partsLength+add])
             k = k + partsLength + add
 
         print()
         print()
         print(str(i)+".", end=" ")
-        for ii in range(len(splitedText[0])):
-            for jj in range(len(splitedText)):
-                if (ii >= len(splitedText[jj])):
+        for ii in range(len(splittedText[0])):
+            for jj in range(len(splittedText)):
+                if (ii >= len(splittedText[jj])):
                     continue
 
-                print(splitedText[jj][ii], end=" ")
+                print(splittedText[jj][ii], end=" ")

@@ -39,7 +39,7 @@ print("X count", key.count("X"))
 
 # get all X-key variants
 allVariants = []
-def FindAllVariants(count, key):
+def findAllVariants(count, key):
   if len(count) == 1:
     key.append(count[0])
     allVariants.append(key)
@@ -51,9 +51,9 @@ def FindAllVariants(count, key):
       newKey.append(count[i])
       newCount.remove(count[i])
 
-      FindAllVariants(newCount, newKey)
+      findAllVariants(newCount, newKey)
 
-FindAllVariants(unusedInKeyColumns, [])
+findAllVariants(unusedInKeyColumns, [])
 
 # display all variants
 for variant in allVariants:
