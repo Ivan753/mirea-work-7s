@@ -16,8 +16,6 @@
   lst
   ))
 
-; Аналог внешнего цикла
-; Служит для запуска сортировщика bobble_sort для каждого шага
 (define (bubble lst)
   (if (> (length lst) 1)
       (bubble-sort (cons (car lst) (bubble (cdr lst))))
